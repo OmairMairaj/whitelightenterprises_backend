@@ -18,14 +18,14 @@ function extractUsernameFromEmail({ email }) {
 const getUserDataByUsername = async ({ username }) => {
     try {
 
-        const userData = await AdminUserModel.findOne({ username:username }).select('-password');
+        const userData = await AdminUserModel.findOne({ username: username }).select('-password');
         return {
             userData
         };
     } catch (error) {
         return {
             error: 'Something went wrong',
-           
+
         };
     }
 };
@@ -141,7 +141,7 @@ const GenratePassKey = async ({ PassKey }) => {
 
         // Hash the password using the generated salt
         const hashedPassword = await bcrypt.hash(PassKey, salt);
-      
+
 
         return hashedPassword;
     } catch (error) {
@@ -154,7 +154,7 @@ const DecodePassKey = async ({ PassKey, PassKeyDb }) => {
     try {
         const salt = await bcrypt.genSalt(10);
         const match = await bcrypt.compare(PassKey, PassKeyDb);
-       
+
         if (match) {
             return match;
         } else {
