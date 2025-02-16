@@ -17,7 +17,8 @@ app.set('token', process.env.SecretKey);
 
 
 const corsOptions = {
-    origin: true,
+    origin: "*",  // Change this to frontend domain for security
+    methods: "GET,HEAD,PUT,PATCH,POST,DELETE",
     credentials: true,
     optionsSuccessStatus: 204,
 };
