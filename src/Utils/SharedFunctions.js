@@ -1,5 +1,5 @@
 const slugify = require('slugify');
-const fast2sms = require('fast-two-sms')
+// const fast2sms = require('fast-two-sms')
 const AdminUserModel = require('../models/AdminUser');
 const bcrypt = require('bcrypt');
 const shortid = require('shortid');
@@ -124,14 +124,15 @@ const sendOTP = async ({ Mobile, OTP }) => {
 
     const mes = OTP;
     var options = { authorization: process.env.FastSMSkey, message: mes, numbers: [Mobile] }
-    const SendSMS = await fast2sms.sendMessage(options)
+    // const SendSMS = await fast2sms.sendMessage(options)
     console.log(OTP)
 
-    if (SendSMS) {
-        return SendSMS
-    } else {
-        return false
-    }
+    // if (SendSMS) {
+    //     return SendSMS
+    // } else {
+    //     return false
+    // }
+    return false;
 };
 
 const GenratePassKey = async ({ PassKey }) => {
@@ -182,33 +183,34 @@ const SendOtpUser = async ({ Mobile }) => {
     if (Mobile) {
 
         var options = { authorization: process.env.FastSMSkey, message: mes, numbers: [Mobile] }
-        const SendSMS = await fast2sms.sendMessage(options)
-        console.log(SendSMS)
+        // const SendSMS = await fast2sms.sendMessage(options)
+        // console.log(SendSMS)
 
-        if (SendSMS.return == true) {
-            try {
-                const data = {
-                    otp: OTPVAl,
-                };
-                const updateOtp = await AdminUserModel.findOneAndUpdate(
-                    { mobile: Mobile },
-                    data,
-                    { new: true }
-                );
-                if (updateOtp) {
-                    return true
-                } else {
-                    return false
-                }
+        // if (SendSMS.return == true) {
+        //     try {
+        //         const data = {
+        //             otp: OTPVAl,
+        //         };
+        //         const updateOtp = await AdminUserModel.findOneAndUpdate(
+        //             { mobile: Mobile },
+        //             data,
+        //             { new: true }
+        //         );
+        //         if (updateOtp) {
+        //             return true
+        //         } else {
+        //             return false
+        //         }
 
-            } catch (error) {
-                console.error(error)
-                return false
-            }
+        //     } catch (error) {
+        //         console.error(error)
+        //         return false
+        //     }
 
-        } else {
-            return false
-        }
+        // } else {
+        //     return false
+        // }
+        return false;
 
     } else {
         return false
