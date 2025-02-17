@@ -1,6 +1,8 @@
 const express = require('express')
 const jwt = require('jsonwebtoken')
-
+// const multer = require("multer");
+const upload = require("../Utils/Uploadfile"); // Ensure correct path
+const cloudinary = require("../Utils/cloudinary");
 require('dotenv').config();
 
 const ProductsModel = require('../models/Products');
@@ -11,7 +13,8 @@ const AdminUserModel = require('../models/AdminUser');
 const verifyTokens = require('../Utils/verifyTokens');
 
 const SharedFunctionsUtils = require('../Utils/SharedFunctions');
-const Uploadfile = require('../Utils/Uploadfile');
+// const storage = multer.memoryStorage();
+// const upload = require("../Utils/Uploadfile");
 const router = express.Router();
 const mongoose = require("mongoose");
 
@@ -46,14 +49,32 @@ router.post('/rm-data', async (req, res, next) => {
 
 
 // Upload Files
-router.post('/image-upload', Uploadfile.single('file'), (req, res) => {
-    if (!req.file) {
-        return res.status(200).json({ error: 'No file provided' });
-    }
-    const fileName = req.file.filename;
-    res.status(200).json({ message: 'Image uploaded successfully', fileName });
-});
+router.post("/image-upload", upload.single("file"), async (req, res) => {
+    try {
+        if (!req.file) {
+            return res.status(400).json({ error: "No file provided" });
+        }
+        console.log("Uploading to Cloudinary:", req.file.path);
 
+        const result = await cloudinary.uploader.upload(req.file.path, {
+            folder: "whitelight_categories",
+            use_filename: true,
+            unique_filename: false,
+        });
+
+        return res.status(200).json({
+            message: "Image uploaded successfully",
+            secure_url: result.secure_url,
+            public_id: result.public_id,
+        });
+    } catch (error) {
+        console.error("Cloudinary Upload Error:", error);
+        return res.status(500).json({
+            error: "Cloudinary upload failed",
+            details: error.message,
+        });
+    }
+});
 
 // Login
 
@@ -207,7 +228,7 @@ router.post('/check-auth', verifyTokens, async (req, res, next) => {
 // category 
 
 
-router.post('/add-category', verifyTokens,async (req, res, next) => {
+router.post('/add-category', verifyTokens, async (req, res, next) => {
 
     try {
 
@@ -259,7 +280,7 @@ router.post('/add-category', verifyTokens,async (req, res, next) => {
 router.post('/category-list', verifyTokens, async (req, res, next) => {
     try {
         const { limit, page } = req.body;
-        
+
         if (!limit || !page) {
             return res.status(400).json({
                 status: false,
@@ -332,16 +353,16 @@ router.post('/category-list-all', verifyTokens, async (req, res, next) => {
     } catch (error) {
         return res.status(500).json({
             status: false,
-           
+
         });
     }
 });
 
 
-router.post('/edit-category',verifyTokens, async (req, res, next) => {
+router.post('/edit-category', verifyTokens, async (req, res, next) => {
     try {
-       
-        const {catId,image,title,description,isActive}= req.body
+
+        const { catId, image, title, description, isActive } = req.body
 
         const updatedData = {
             image: image,
@@ -410,7 +431,7 @@ router.post('/delete-category', verifyTokens, async (req, res, next) => {
 });
 
 
-router.post('/category-data',verifyTokens, async (req, res, next) => {
+router.post('/category-data', verifyTokens, async (req, res, next) => {
     try {
         const { catId } = req.body;
 
@@ -437,7 +458,7 @@ router.post('/category-data',verifyTokens, async (req, res, next) => {
 });
 
 
-router.post('/add-sub-category', verifyTokens,async (req, res, next) => {
+router.post('/add-sub-category', verifyTokens, async (req, res, next) => {
 
     try {
 
@@ -488,17 +509,17 @@ router.post('/add-sub-category', verifyTokens,async (req, res, next) => {
 
 })
 
-router.post('/sub-category-list',verifyTokens, async (req, res, next) => {
+router.post('/sub-category-list', verifyTokens, async (req, res, next) => {
 
     try {
-        const { limit, page,catId } = req.body;
+        const { limit, page, catId } = req.body;
         const skip = (page - 1) * limit;
         let AllData = null
         if (page == 1) {
-            AllData = await subCategoryModel.countDocuments({catId:catId})
+            AllData = await subCategoryModel.countDocuments({ catId: catId })
         }
 
-        const ListData = await subCategoryModel.find({catId:catId}).sort({ _id: -1 }).skip(skip).limit(limit)
+        const ListData = await subCategoryModel.find({ catId: catId }).sort({ _id: -1 }).skip(skip).limit(limit)
 
         return res.status(200).json({
             status: true,
@@ -517,18 +538,18 @@ router.post('/sub-category-list',verifyTokens, async (req, res, next) => {
 
 })
 
-router.post('/sub-category-list-all',verifyTokens, async (req, res, next) => {
+router.post('/sub-category-list-all', verifyTokens, async (req, res, next) => {
 
     try {
         const { categoryId } = req.body;
-      
-        
-        const subcategories = await subCategoryModel.find({catId:categoryId})
+
+
+        const subcategories = await subCategoryModel.find({ catId: categoryId })
 
         return res.status(200).json({
             status: true,
             subcategories: subcategories,
-          
+
         })
 
     } catch (error) {
@@ -541,7 +562,7 @@ router.post('/sub-category-list-all',verifyTokens, async (req, res, next) => {
 
 })
 
-router.post('/sub-category-data',verifyTokens, async (req, res, next) => {
+router.post('/sub-category-data', verifyTokens, async (req, res, next) => {
     try {
         const { subCatId } = req.body;
 
@@ -566,10 +587,10 @@ router.post('/sub-category-data',verifyTokens, async (req, res, next) => {
         });
     }
 });
-router.post('/edit-sub-category',verifyTokens, async (req, res, next) => {
+router.post('/edit-sub-category', verifyTokens, async (req, res, next) => {
     try {
-       
-        const {subCatId,image,title,description,isActive}= req.body
+
+        const { subCatId, image, title, description, isActive } = req.body
 
         const updatedData = {
             image: image,
@@ -607,9 +628,9 @@ router.post('/edit-sub-category',verifyTokens, async (req, res, next) => {
 });
 
 
-router.post('/delete-sub-category',verifyTokens, async (req, res, next) => {
+router.post('/delete-sub-category', verifyTokens, async (req, res, next) => {
     try {
-        const {subCatId} = req.body;
+        const { subCatId } = req.body;
 
         const result = await subCategoryModel.findOneAndDelete({ subCatId: subCatId });
 
@@ -637,10 +658,10 @@ router.post('/delete-sub-category',verifyTokens, async (req, res, next) => {
 
 
 // products
-router.post('/products-list',verifyTokens, async (req, res, next) => {
+router.post('/products-list', verifyTokens, async (req, res, next) => {
 
     try {
-        const { limit, page,catId } = req.body;
+        const { limit, page, catId } = req.body;
         const skip = (page - 1) * limit;
         let AllData = null
         if (page == 1) {
@@ -668,15 +689,15 @@ router.post('/products-list',verifyTokens, async (req, res, next) => {
 
 router.post('/add-product', verifyTokens, async (req, res, next) => {
     try {
-        const { 
-            name, 
-            price, 
-            discount, 
-            shortDescription, 
-            description, 
-            image, 
-            hoverImage, 
-            availability ,
+        const {
+            name,
+            price,
+            discount,
+            shortDescription,
+            description,
+            image,
+            hoverImage,
+            availability,
             subcategory,
             category,
             additionalImages
@@ -699,17 +720,17 @@ router.post('/add-product', verifyTokens, async (req, res, next) => {
             slug: slug,
             catId: category,
             subCatId: subcategory,
-            image: image, 
-            hoverImage: hoverImage, 
-            additionalImages:additionalImages,
-            title: name, 
-            price: price, 
-            discount: discount, 
-            shortDescription: shortDescription, 
-            description: description, 
+            image: image,
+            hoverImage: hoverImage,
+            additionalImages: additionalImages,
+            title: name,
+            price: price,
+            discount: discount,
+            shortDescription: shortDescription,
+            description: description,
             availability: availability,
             createdAt: createdAt,
-           
+
         });
 
         // Save product to the database
@@ -738,7 +759,7 @@ router.post('/add-product', verifyTokens, async (req, res, next) => {
     }
 });
 
-router.post('/product-data',verifyTokens, async (req, res, next) => {
+router.post('/product-data', verifyTokens, async (req, res, next) => {
     try {
         const { slug } = req.body;
 
@@ -764,15 +785,15 @@ router.post('/product-data',verifyTokens, async (req, res, next) => {
     }
 });
 
-router.post('/edit-product',verifyTokens, async (req, res, next) => {
+router.post('/edit-product', verifyTokens, async (req, res, next) => {
     try {
-       
-        const {slug,name,price,discount,shortDescription,description,image,hoverImage,availability,category,subcategory,additionalImages}= req.body
 
-        
+        const { slug, name, price, discount, shortDescription, description, image, hoverImage, availability, category, subcategory, additionalImages } = req.body
+
+
 
         const updatedData = {
-            
+
             title: name,
             price: price,
             discount: discount,
@@ -783,7 +804,7 @@ router.post('/edit-product',verifyTokens, async (req, res, next) => {
             availability: availability,
             category: category,
             subcategory: subcategory || null,
-            additionalImages:additionalImages,
+            additionalImages: additionalImages,
 
         };
 
@@ -814,9 +835,9 @@ router.post('/edit-product',verifyTokens, async (req, res, next) => {
     }
 });
 
-router.post('/delete-product',verifyTokens, async (req, res, next) => {
+router.post('/delete-product', verifyTokens, async (req, res, next) => {
     try {
-        const {slug} = req.body;
+        const { slug } = req.body;
 
         const result = await ProductsModel.findOneAndDelete({ slug: slug });
 
@@ -852,7 +873,7 @@ router.post('/db-counter', verifyTokens, async (req, res, next) => {
         const categories = await CategoryModel.countDocuments()
         const subcategories = await subCategoryModel.countDocuments()
 
-      
+
         return res.status(200).json({
             status: true,
             products: products,
