@@ -381,7 +381,7 @@ router.post('/edit-category', verifyTokens, async (req, res, next) => {
         if (result) {
             return res.status(200).json({
                 status: true,
-                msg: 'updated successfully',
+                msg: 'Updated successfully',
                 Data: result,
             });
         } else {
