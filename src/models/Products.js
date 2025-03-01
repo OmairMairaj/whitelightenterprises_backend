@@ -15,7 +15,7 @@ const ProductsSchema = new mongoose.Schema({
     },
     subCatId: {
         type: String,
-        
+
     },
     image: {
         type: String,
@@ -24,13 +24,19 @@ const ProductsSchema = new mongoose.Schema({
     hoverImage: {
         type: String,
         required: true,
-        
+
     },
     additionalImages: {
         type: Object,
-        
-        
+
+
     },
+    additional_img_cap_1: { type: String, default: "" },
+    additional_img_cap_2: { type: String, default: "" },
+    additional_img_cap_3: { type: String, default: "" },
+    additional_img_cap_4: { type: String, default: "" },
+    additional_img_cap_5: { type: String, default: "" },
+
     title: {
         type: String,
         required: true,
@@ -47,12 +53,12 @@ const ProductsSchema = new mongoose.Schema({
         type: String,
         required: true,
     },
-   
+
     shortDescription: {
         type: String,
         required: true,
     },
-   
+
     createdAt: {
         type: Object,
         required: true,
@@ -61,7 +67,7 @@ const ProductsSchema = new mongoose.Schema({
         type: Boolean,
         required: true,
     },
-   
+
 })
 
 module.exports = mongoose.model('Products', ProductsSchema);

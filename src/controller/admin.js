@@ -700,7 +700,12 @@ router.post('/add-product', verifyTokens, async (req, res, next) => {
             availability,
             subcategory,
             category,
-            additionalImages
+            additionalImages,
+            additional_img_cap_1,
+            additional_img_cap_2,
+            additional_img_cap_3,
+            additional_img_cap_4,
+            additional_img_cap_5
         } = req.body;
 
         // Format creation date and time
@@ -730,6 +735,11 @@ router.post('/add-product', verifyTokens, async (req, res, next) => {
             description: description,
             availability: availability,
             createdAt: createdAt,
+            additional_img_cap_1: additional_img_cap_1,
+            additional_img_cap_2: additional_img_cap_2,
+            additional_img_cap_3: additional_img_cap_3,
+            additional_img_cap_4: additional_img_cap_4,
+            additional_img_cap_5: additional_img_cap_5
 
         });
 
@@ -788,7 +798,7 @@ router.post('/product-data', verifyTokens, async (req, res, next) => {
 router.post('/edit-product', verifyTokens, async (req, res, next) => {
     try {
 
-        const { slug, name, price, discount, shortDescription, description, image, hoverImage, availability, category, subcategory, additionalImages } = req.body
+        const { slug, name, price, discount, shortDescription, description, image, hoverImage, availability, category, subcategory, additionalImages, additional_img_cap_1, additional_img_cap_2, additional_img_cap_3, additional_img_cap_4, additional_img_cap_5 } = req.body
 
 
 
@@ -805,6 +815,11 @@ router.post('/edit-product', verifyTokens, async (req, res, next) => {
             category: category,
             subcategory: subcategory || null,
             additionalImages: additionalImages,
+            additional_img_cap_1: additional_img_cap_1,
+            additional_img_cap_2: additional_img_cap_2,
+            additional_img_cap_3: additional_img_cap_3,
+            additional_img_cap_4: additional_img_cap_4,
+            additional_img_cap_5: additional_img_cap_5
 
         };
 
@@ -892,8 +907,46 @@ router.post('/db-counter', verifyTokens, async (req, res, next) => {
 
 })
 
+router.post('/update-products-with-captions', async (req, res) => {
+    try {
+        // Define default values for new caption fields
+        const defaultCaptions = {
+            additional_img_cap_1: "",
+            additional_img_cap_2: "",
+            additional_img_cap_3: "",
+            additional_img_cap_4: "",
+            additional_img_cap_5: ""
+        };
 
+        // Update all products that don't have these caption fields
+        const result = await ProductsModel.updateMany(
+            {
+                $or: [
+                    { additional_img_cap_1: { $exists: false } },
+                    { additional_img_cap_2: { $exists: false } },
+                    { additional_img_cap_3: { $exists: false } },
+                    { additional_img_cap_4: { $exists: false } },
+                    { additional_img_cap_5: { $exists: false } }
+                ]
+            },
+            { $set: defaultCaptions } // Set default values
+        );
 
+        return res.status(200).json({
+            status: true,
+            msg: 'All products updated with new caption fields',
+            modifiedCount: result.modifiedCount
+        });
+
+    } catch (error) {
+        console.error("Error updating products:", error);
+        return res.status(500).json({
+            status: false,
+            msg: 'Server error while updating products',
+            error: error.message
+        });
+    }
+});
 
 
 module.exports = router;
