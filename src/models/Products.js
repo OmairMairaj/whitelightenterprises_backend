@@ -37,6 +37,11 @@ const ProductsSchema = new mongoose.Schema({
     additional_img_cap_4: { type: String, default: "" },
     additional_img_cap_5: { type: String, default: "" },
 
+    bannerImage: {
+        type: String,
+        required: true,
+        default: "",
+    },
     title: {
         type: String,
         required: true,

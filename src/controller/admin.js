@@ -948,5 +948,29 @@ router.post('/update-products-with-captions', async (req, res) => {
     }
 });
 
+router.post('/add-banner-image-field', async (req, res) => {
+    try {
+        // Default value for bannerImage (adjust if needed)
+        const defaultBannerImage = "";
+
+        // Update all products where bannerImage does not exist
+        const result = await ProductsModel.updateMany(
+            { bannerImage: { $exists: false } },
+            { $set: { bannerImage: defaultBannerImage } }
+        );
+
+        return res.status(200).json({
+            status: true,
+            msg: `${result.modifiedCount} products updated with bannerImage field.`,
+        });
+    } catch (error) {
+        console.error("Error updating bannerImage field:", error);
+        return res.status(500).json({
+            status: false,
+            msg: 'Server error while updating products.',
+        });
+    }
+});
+
 
 module.exports = router;
