@@ -39,7 +39,6 @@ const ProductsSchema = new mongoose.Schema({
 
     bannerImage: {
         type: String,
-        required: true,
         default: "",
     },
     title: {
