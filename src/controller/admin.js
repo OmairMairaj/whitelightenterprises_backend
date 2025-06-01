@@ -705,7 +705,8 @@ router.post('/add-product', verifyTokens, async (req, res, next) => {
             additional_img_cap_2,
             additional_img_cap_3,
             additional_img_cap_4,
-            additional_img_cap_5
+            additional_img_cap_5,
+            bannerImage
         } = req.body;
 
         // Format creation date and time
@@ -739,7 +740,8 @@ router.post('/add-product', verifyTokens, async (req, res, next) => {
             additional_img_cap_2: additional_img_cap_2,
             additional_img_cap_3: additional_img_cap_3,
             additional_img_cap_4: additional_img_cap_4,
-            additional_img_cap_5: additional_img_cap_5
+            additional_img_cap_5: additional_img_cap_5,
+            bannerImage: bannerImage, // Default to empty string if not provided
 
         });
 
@@ -798,7 +800,7 @@ router.post('/product-data', verifyTokens, async (req, res, next) => {
 router.post('/edit-product', verifyTokens, async (req, res, next) => {
     try {
 
-        const { slug, name, price, discount, shortDescription, description, image, hoverImage, availability, category, subcategory, additionalImages, additional_img_cap_1, additional_img_cap_2, additional_img_cap_3, additional_img_cap_4, additional_img_cap_5 } = req.body
+        const { slug, name, price, discount, shortDescription, description, image, hoverImage, availability, category, subcategory, additionalImages, additional_img_cap_1, additional_img_cap_2, additional_img_cap_3, additional_img_cap_4, additional_img_cap_5, bannerImage } = req.body
 
 
 
@@ -819,7 +821,8 @@ router.post('/edit-product', verifyTokens, async (req, res, next) => {
             additional_img_cap_2: additional_img_cap_2,
             additional_img_cap_3: additional_img_cap_3,
             additional_img_cap_4: additional_img_cap_4,
-            additional_img_cap_5: additional_img_cap_5
+            additional_img_cap_5: additional_img_cap_5,
+            bannerImage: bannerImage
 
         };
 
