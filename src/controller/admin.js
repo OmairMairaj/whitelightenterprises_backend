@@ -741,6 +741,7 @@ router.post('/add-product', verifyTokens, async (req, res, next) => {
             additional_img_cap_3: additional_img_cap_3,
             additional_img_cap_4: additional_img_cap_4,
             additional_img_cap_5: additional_img_cap_5,
+            pdfFile:pdfFile,
             bannerImage: bannerImage, // Default to empty string if not provided
 
         });
@@ -822,6 +823,7 @@ router.post('/edit-product', verifyTokens, async (req, res, next) => {
             additional_img_cap_3: additional_img_cap_3,
             additional_img_cap_4: additional_img_cap_4,
             additional_img_cap_5: additional_img_cap_5,
+            pdfFile:pdfFile,
             bannerImage: bannerImage
 
         };
