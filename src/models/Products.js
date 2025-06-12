@@ -72,6 +72,11 @@ const ProductsSchema = new mongoose.Schema({
         required: true,
     },
 
+    pdfFile: {
+       type: String, // This will store the Cloudinary URL
+       required: false,
+     },
+
 })
 
 module.exports = mongoose.model('Products', ProductsSchema);
