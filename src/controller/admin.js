@@ -802,7 +802,7 @@ router.post('/product-data', verifyTokens, async (req, res, next) => {
 router.post('/edit-product', verifyTokens, async (req, res, next) => {
     try {
 
-        const { slug, name, price, discount, shortDescription, description, image, hoverImage, availability, category, subcategory, additionalImages, additional_img_cap_1, additional_img_cap_2, additional_img_cap_3, additional_img_cap_4, additional_img_cap_5, bannerImage } = req.body
+        const { slug, name, price, discount, shortDescription, description, image, hoverImage, availability, category, subcategory, additionalImages, additional_img_cap_1, additional_img_cap_2, additional_img_cap_3, additional_img_cap_4, additional_img_cap_5, bannerImage,pdfFile } = req.body
 
 
 
